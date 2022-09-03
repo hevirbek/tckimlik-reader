@@ -5,6 +5,8 @@ import easyocr
 import streamlit as st
 from datetime import datetime
 
+reader = easyocr.Reader(lang_list=['tr'])
+
 
 class Citizen:
     def __init__(self, identity_no=None, name=None, surname=None, date_of_birth=None, document_no=None, gender=None, valid_until=None):
@@ -37,7 +39,6 @@ def get_info(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     bfilter = cv2.bilateralFilter(gray, 11, 17, 17)
 
-    reader = easyocr.Reader(lang_list=['tr'], gpu=False)
     results = reader.readtext(bfilter)
 
     for i, w in enumerate(results):
