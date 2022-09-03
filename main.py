@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import easyocr
@@ -69,7 +70,11 @@ Kimliğinizin ön yüzünü yükleyin!
 uploaded_file = st.file_uploader("Choose a file")
 
 if uploaded_file is not None:
-    img = cv2.imread(uploaded_file.name)
+    # img = cv2.imread(uploaded_file.name)
+
+    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    img = cv2.imdecode(file_bytes, 1)
+
     with st.spinner('İşlem yapılıyor...'):
         citizen = get_info(img)
 
