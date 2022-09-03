@@ -1,4 +1,4 @@
 easyocr
 matplotlib
-opencv-python
+opencv_python_headless
 streamlit
