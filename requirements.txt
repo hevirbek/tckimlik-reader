@@ -1,4 +1,5 @@
 easyocr
 matplotlib
+numpy
 opencv_python_headless
 streamlit
