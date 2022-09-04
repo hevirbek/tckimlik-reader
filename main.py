@@ -1,9 +1,9 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import cv2
+import io
+from PIL import Image
 import easyocr
 import streamlit as st
 from datetime import datetime
+
 
 @st.cache
 def load_model():
@@ -41,10 +41,7 @@ def check_citizen(c: Citizen):
 def get_info(img):
     citizen = Citizen()
 
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    bfilter = cv2.bilateralFilter(gray, 11, 17, 17)
-
-    results = reader.readtext(bfilter)
+    results = reader.readtext(img)
 
     for i, w in enumerate(results):
         result = w[1]
@@ -76,10 +73,8 @@ Kimliğinizin ön yüzünü yükleyin!
 uploaded_file = st.file_uploader("Choose a file")
 
 if uploaded_file is not None:
-    # img = cv2.imread(uploaded_file.name)
-
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    img = cv2.imdecode(file_bytes, 1)
+    bytes_data = uploaded_file.read()
+    img = Image.open(io.BytesIO(bytes_data))
 
     with st.spinner('İşlem yapılıyor...'):
         citizen = get_info(img)
