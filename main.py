@@ -39,6 +39,7 @@ def check_citizen(c: Citizen):
     return False
 
 
+@st.cache
 def get_info(img):
     citizen = Citizen()
 
@@ -74,16 +75,20 @@ Kimliğinizin ön yüzünü yükleyin!
 uploaded_file = st.file_uploader("Choose a file")
 
 if uploaded_file is not None:
-    bytes_data = uploaded_file.read()
-    img = Image.open(io.BytesIO(bytes_data))
+    if (uploaded_file.size / (1024*1024)) < 2.1:
+        bytes_data = uploaded_file.read()
+        img = Image.open(io.BytesIO(bytes_data))
 
-    with st.spinner('İşlem yapılıyor...'):
-        citizen = get_info(img)
+        with st.spinner('İşlem yapılıyor...'):
+            citizen = get_info(img)
 
-    if check_citizen(citizen):
-        st.write("Fullname: **" + citizen.name + " " + citizen.surname + "**")
-        st.write("TC: **" + citizen.identity_no + "**")
-        st.write("Birthday: **" + citizen.date_of_birth + "**")
-        st.write("Gender: **" + citizen.gender + "**")
+        if check_citizen(citizen):
+            st.write("Fullname: **" + citizen.name +
+                     " " + citizen.surname + "**")
+            st.write("TC: **" + citizen.identity_no + "**")
+            st.write("Birthday: **" + citizen.date_of_birth + "**")
+            st.write("Gender: **" + citizen.gender + "**")
+        else:
+            st.error('Hata oluştu. Daha net bir fotoğraf yükleyin!')
     else:
-        st.error('Hata oluştu. Daha net bir fotoğraf yükleyin!')
+        st.error('Dosya boyutu en fazla 2MB olmalıdır :(')
