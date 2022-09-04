@@ -3,6 +3,7 @@ from PIL import Image
 import easyocr
 import streamlit as st
 from datetime import datetime
+from dataclasses import dataclass
 
 
 @st.cache
@@ -13,15 +14,15 @@ def load_model():
 reader = load_model()
 
 
+@dataclass
 class Citizen:
-    def __init__(self, identity_no=None, name=None, surname=None, date_of_birth=None, document_no=None, gender=None, valid_until=None):
-        self.identity_no = identity_no
-        self.name = name
-        self.surname = surname
-        self.date_of_birth = date_of_birth
-        self.document_no = document_no
-        self.gender = gender
-        self.valid_until = valid_until
+    identity_no: str = None
+    name: str = None
+    surname: str = None
+    date_of_birth: str = None
+    document_no: str = None
+    gender: str = None
+    valid_until: str = None
 
 
 def is_date(s: str) -> bool:
