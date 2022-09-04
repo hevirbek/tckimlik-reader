@@ -5,7 +5,12 @@ import easyocr
 import streamlit as st
 from datetime import datetime
 
-reader = easyocr.Reader(lang_list=['tr'])
+@st.cache
+def load_model():
+    return easyocr.Reader(lang_list=['tr'], model_storage_directory='.')
+
+
+reader = load_model()
 
 
 class Citizen:
