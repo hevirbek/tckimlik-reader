@@ -1,14 +1,16 @@
 import io
-from PIL import Image
-import easyocr
+from PIL import Image, JpegImagePlugin
+from easyocr import Reader
 import streamlit as st
 from datetime import datetime
 from dataclasses import dataclass
+import uuid
+import os
 
 
 @st.cache
 def load_model():
-    return easyocr.Reader(lang_list=['tr'], model_storage_directory='.')
+    return Reader(lang_list=['tr'], model_storage_directory='.', gpu=False)
 
 
 reader = load_model()
@@ -78,9 +80,19 @@ if uploaded_file is not None:
     if (uploaded_file.size / (1024*1024)) < 2.1:
         bytes_data = uploaded_file.read()
         img = Image.open(io.BytesIO(bytes_data))
+        width, height = img.width, img.height
+        if width > 1200:
+            new_width = 800
+            perception = new_width / width
+            new_height = int(height * perception)
+            img = img.resize((new_width, new_height))
+            fn = str(uuid.uuid1()) + '.jpg'
+            img.save(fn)
+            img = Image.open(fn)
 
         with st.spinner('İşlem yapılıyor...'):
             citizen = get_info(img)
+            os.remove(fn)
 
         if check_citizen(citizen):
             st.write("Fullname: **" + citizen.name +
@@ -90,5 +102,7 @@ if uploaded_file is not None:
             st.write("Gender: **" + citizen.gender + "**")
         else:
             st.error('Hata oluştu. Daha net bir fotoğraf yükleyin!')
+        st.image(img)
+
     else:
         st.error('Dosya boyutu en fazla 2MB olmalıdır :(')
