@@ -105,7 +105,5 @@ if uploaded_file is not None:
             st.write("Gender: **" + citizen.gender + "**")
         else:
             st.error('Hata oluştu. Daha net bir fotoğraf yükleyin!')
-        st.image(img)
-
     else:
         st.error('Dosya boyutu en fazla 2MB olmalıdır :(')
