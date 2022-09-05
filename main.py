@@ -77,6 +77,7 @@ Kimliğinizin ön yüzünü yükleyin!
 uploaded_file = st.file_uploader("Choose a file")
 
 if uploaded_file is not None:
+    resized = False
     if (uploaded_file.size / (1024*1024)) < 2.1:
         bytes_data = uploaded_file.read()
         img = Image.open(io.BytesIO(bytes_data))
@@ -89,10 +90,12 @@ if uploaded_file is not None:
             fn = str(uuid.uuid1()) + '.jpg'
             img.save(fn)
             img = Image.open(fn)
+            resized = True
 
         with st.spinner('İşlem yapılıyor...'):
             citizen = get_info(img)
-            os.remove(fn)
+            if resized:
+                os.remove(fn)
 
         if check_citizen(citizen):
             st.write("Fullname: **" + citizen.name +
@@ -102,5 +105,7 @@ if uploaded_file is not None:
             st.write("Gender: **" + citizen.gender + "**")
         else:
             st.error('Hata oluştu. Daha net bir fotoğraf yükleyin!')
+        st.image(img)
+
     else:
         st.error('Dosya boyutu en fazla 2MB olmalıdır :(')
